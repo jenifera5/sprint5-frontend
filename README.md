@@ -122,7 +122,7 @@ VITE_API_BASE_URL=http://127.0.0.1:8000/api
 
 ### Cliente API (Axios)
 
-El archivo `src/services/client.ts` configura Axios con interceptores:
+El archivo `src/api/client.ts` configura Axios con interceptores:
 
 ```typescript
 import axios from "axios";
@@ -164,32 +164,70 @@ api.interceptors.response.use(
 ```
 sprint5-frontend/
 ├── src/
-│   ├── components/
-│   │   └── layout/
-│   │       └── DashboardLayout.tsx
-│   ├── pages/
-│   │   ├── Books.tsx
-│   │   ├── Categories.tsx
-│   │   ├── Loans.tsx
-│   │   ├── Stats.tsx
-│   │   ├── login.tsx
-│   │   ├── Register.tsx
-│   │   └── Logout.tsx
-│   ├── services/
-│   │   ├── client.ts
-│   │   ├── authService.ts
-│   │   ├── bookService.ts
-│   │   ├── categoryService.ts
-│   │   └── loanService.ts
-│   ├── App.tsx
-│   ├── main.tsx
-│   └── index.css
-├── public/
-├── .env
-├── package.json
-├── tsconfig.json
-├── tailwind.config.js
-└── vite.config.ts
+│   ├── api/                        # Servicios de API
+│   │   ├── authService.ts          # Autenticación (login, register, logout)
+│   │   ├── bookService.ts          # CRUD de libros
+│   │   ├── categoryService.ts      # CRUD de categorías
+│   │   ├── client.ts               # Cliente Axios configurado
+│   │   └── loanService.ts          # Gestión de préstamos
+│   │
+│   ├── assets/                     # Recursos estáticos
+│   │   ├── services/
+│   │   │   └── api.js              # Configuración alternativa API
+│   │   └── react.svg               # Logo React
+│   │
+│   ├── components/                 # Componentes reutilizables
+│   │   ├── layout/
+│   │   │   └── DashboardLayout.tsx # Layout principal con sidebar
+│   │   ├── ui/                     # Componentes UI base
+│   │   │   ├── avatar.tsx          # Avatar de usuario
+│   │   │   ├── button.tsx          # Botones personalizados
+│   │   │   ├── card.tsx            # Tarjetas de contenido
+│   │   │   ├── dropdown-menu.tsx   # Menús desplegables
+│   │   │   ├── input.tsx           # Inputs de formulario
+│   │   │   └── label.tsx           # Etiquetas de formulario
+│   │   └── ProtectedRoute.tsx      # HOC para rutas protegidas
+│   │
+│   ├── context/                    # Context API
+│   │   └── AuthContext.tsx         # Estado global de autenticación
+│   │
+│   ├── lib/                        # Utilidades
+│   │   └── utils.tsx               # Funciones helper
+│   │
+│   ├── pages/                      # Páginas principales
+│   │   ├── Books.tsx               # Gestión de libros
+│   │   ├── Categories.tsx          # Gestión de categorías
+│   │   ├── Loans.tsx               # Gestión de préstamos
+│   │   ├── Stats.tsx               # Estadísticas y gráficos
+│   │   ├── login.tsx               # Página de inicio de sesión
+│   │   ├── Logout.tsx              # Página de cierre de sesión
+│   │   └── Register.tsx            # Página de registro
+│   │
+│   ├── router/                     # Configuración de rutas
+│   │
+│   ├── App.css                     # Estilos globales CSS
+│   ├── App.jsx                     # Componente raíz (JSX)
+│   ├── App.tsx                     # Componente raíz (TypeScript)
+│   ├── index.css                   # Estilos base + Tailwind
+│   ├── main.jsx                    # Punto de entrada (JSX)
+│   └── main.tsx                    # Punto de entrada (TypeScript)
+│
+├── public/                         # Archivos públicos
+│
+├── vendor/                         # Dependencias PHP (si aplica)
+│
+├── .env                            # Variables de entorno
+├── .gitignore                      # Archivos ignorados por Git
+├── composer.json                   # Dependencias PHP
+├── composer.lock                   # Lock de dependencias PHP
+├── eslint.config.js                # Configuración ESLint
+├── index.html                      # HTML principal
+├── package-lock.json               # Lock de dependencias NPM
+├── package.json                    # Dependencias y scripts NPM
+├── postcss.config.js               # Configuración PostCSS
+├── README.md                       # Documentación del proyecto
+├── tailwind.config.js              # Configuración TailwindCSS
+└── vite.config.ts                  # Configuración Vite
 ```
 
 ---
@@ -201,9 +239,66 @@ sprint5-frontend/
 Layout principal con sidebar y navegación:
 
 ```typescript
+import { Link, useNavigate } from "react-router-dom";
+import { BookOpen, Tag, Users, BarChart, LogOut } from "lucide-react";
 
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
   
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
+  return (
+    
+      {/* Sidebar */}
+      
+        
+          📚 Biblioteca
+        
+        
+          
+            
+            Libros
+          
+          
+            
+            Categorías
+          
+          
+            
+            Préstamos
+          
+          
+            
+            Estadísticas
+          
+        
+      
+
+      {/* Main Content */}
+      
+        {/* Header */}
+        
+          
+            Dashboard
+            
+              
+              Cerrar sesión
+            
+          
+        
+
+        {/* Page Content */}
+        
+          {children}
+        
+      
+    
+  );
+}
 ```
 
 **Características:**
@@ -524,6 +619,8 @@ try {
 ---
 
 **Última actualización:** Noviembre 2025 | **Versión:** 1.0.0
+
+
 
 
 
